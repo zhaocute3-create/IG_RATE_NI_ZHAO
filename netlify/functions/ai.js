@@ -5,19 +5,15 @@ exports.handler = async (event) => {
     const prompt = `
 You are an Instagram analytics AI.
 
-Analyze:
-
 Followers: ${followers}
 Following: ${following}
 Posts: ${posts}
 
-IMPORTANT FORMAT:
-Return EXACT JSON ONLY (no text, no markdown):
-
+Return ONLY valid JSON:
 {
   "rating": "X/10",
   "percent": "XX%",
-  "explanation": "short human-like explanation"
+  "explanation": "short explanation"
 }
 `;
 
@@ -30,48 +26,38 @@ Return EXACT JSON ONLY (no text, no markdown):
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: [{ role: "user", content: prompt }],
-        temperature: 0.7
+        temperature: 0.5
       })
     });
 
     const data = await response.json();
 
-    const text = data.choices?.[0]?.message?.content || "{}";
+    let text = data.choices?.[0]?.message?.content || "";
 
-    let parsed;
-
+    // SAFE PARSE (no crash)
+    let result;
     try {
-      parsed = JSON.parse(text);
+      result = JSON.parse(text);
     } catch (e) {
-      parsed = {
-        rating: extractRating(text),
-        percent: extractPercent(text),
-        explanation: text
+      result = {
+        rating: "7/10",
+        percent: "70%",
+        explanation: text || "Unable to parse AI response"
       };
     }
 
     return {
       statusCode: 200,
-      body: JSON.stringify(parsed)
+      body: JSON.stringify(result)
     };
 
-  } catch (error) {
+  } catch (err) {
     return {
       statusCode: 500,
       body: JSON.stringify({
         error: "Server error",
-        message: error.message
+        message: err.message
       })
     };
   }
 };
-
-function extractRating(text) {
-  const match = text.match(/(\d(\.\d)?)\/10/);
-  return match ? match[1] + "/10" : "7/10";
-}
-
-function extractPercent(text) {
-  const match = text.match(/(\d{1,3})%/);
-  return match ? match[1] : "70";
-}

@@ -2,7 +2,6 @@ exports.handler = async (event) => {
   const { followers, following, posts } = JSON.parse(event.body);
 
   const prompt = `
-Inconst prompt = `
 You are an Instagram analytics AI.
 
 Analyze:

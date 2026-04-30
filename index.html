@@ -2,51 +2,104 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Tool</title>
+<title>IG RATE NI ZHAO</title>
 
 <style>
 body{
- background:#0b1220;
- color:#00ffcc;
- font-family:sans-serif;
- text-align:center;
+  background:#050b18;
+  color:#00ccff;
+  font-family:sans-serif;
+  text-align:center;
 }
+
+h1{
+  text-shadow:0 0 20px #00ccff;
+}
+
+.card{
+  margin:20px;
+  padding:20px;
+  border:1px solid #00ccff;
+  border-radius:15px;
+  box-shadow:0 0 20px #00ccff33;
+}
+
 input{
- width:80%;
- padding:10px;
- margin:10px;
- border-radius:10px;
+  width:80%;
+  padding:12px;
+  margin:8px;
+  border-radius:10px;
+  border:1px solid #00ccff;
+  background:#0a142a;
+  color:#00ccff;
 }
+
 button{
- padding:10px 20px;
- background:#00ffcc;
- border:none;
+  padding:12px 25px;
+  background:#00ccff;
+  border:none;
+  color:black;
+  font-weight:bold;
+  border-radius:10px;
+  cursor:pointer;
+  box-shadow:0 0 15px #00ccff;
+}
+
+#loading{
+  display:none;
+  margin-top:10px;
+  color:#00ccff;
+  animation:blink 1s infinite;
+}
+
+@keyframes blink{
+  50%{opacity:0.3;}
+}
+
+#result{
+  margin-top:20px;
+  white-space:pre-line;
 }
 </style>
 </head>
 
 <body>
 
-<h2>🤖 My AI Tool</h2>
+<h1>🔥 IG RATE NI ZHAO</h1>
 
-<input id="text" placeholder="Ask anything...">
-<button onclick="ask()">Ask</button>
+<div class="card">
+
+<input id="followers" placeholder="Followers (pwede 0)">
+<input id="following" placeholder="Following (pwede 0)">
+<input id="posts" placeholder="Posts (pwede 0)">
+
+<button onclick="rate()">RATE NOW</button>
+
+<div id="loading">⏳ Analyzing account...</div>
 
 <div id="result"></div>
 
+</div>
+
 <script>
-async function ask(){
-  result.innerText = "Thinking...";
+async function rate(){
+
+  loading.style.display="block";
+  result.innerText="";
 
   let res = await fetch("/.netlify/functions/ai",{
     method:"POST",
     headers:{"Content-Type":"application/json"},
     body: JSON.stringify({
-      message: text.value
+      followers: Number(followers.value),
+      following: Number(following.value),
+      posts: Number(posts.value)
     })
   });
 
   let data = await res.json();
+
+  loading.style.display="none";
   result.innerText = data.reply;
 }
 </script>

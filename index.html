@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Tool</title>
+
+<style>
+body{
+ background:#0b1220;
+ color:#00ffcc;
+ font-family:sans-serif;
+ text-align:center;
+}
+input{
+ width:80%;
+ padding:10px;
+ margin:10px;
+ border-radius:10px;
+}
+button{
+ padding:10px 20px;
+ background:#00ffcc;
+ border:none;
+}
+</style>
+</head>
+
+<body>
+
+<h2>🤖 My AI Tool</h2>
+
+<input id="text" placeholder="Ask anything...">
+<button onclick="ask()">Ask</button>
+
+<div id="result"></div>
+
+<script>
+async function ask(){
+  result.innerText = "Thinking...";
+
+  let res = await fetch("/.netlify/functions/ai",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({
+      message: text.value
+    })
+  });
+
+  let data = await res.json();
+  result.innerText = data.reply;
+}
+</script>
+
+</body>
+</html>

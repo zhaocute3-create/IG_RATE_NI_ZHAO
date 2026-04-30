@@ -2,18 +2,24 @@ exports.handler = async (event) => {
   const { followers, following, posts } = JSON.parse(event.body);
 
   const prompt = `
-Instagram analysis:
+Inconst prompt = `
+You are an Instagram analytics AI.
+
+Analyze:
 
 Followers: ${followers}
 Following: ${following}
 Posts: ${posts}
 
-Give:
-- rating /10
-- percentage engagement
-- short human explanation (friendly, natural, no mention of AI)
-`;
+IMPORTANT FORMAT:
+Return EXACT JSON ONLY (no text outside):
 
+{
+  "rating": "X/10",
+  "percent": "XX%",
+  "explanation": "short human-like explanation"
+}
+`;
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
